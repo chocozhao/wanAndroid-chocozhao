@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFC800</color>
+    <color name="colorPrimaryDark">#FF5722</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="colorAccent_gray">#7BFFC107</color>
+    <color name="colorBackground">#EEEEEE</color>
+    <color name="textColorPrimary">#616161</color>
+    <color name="textColorPress">#2A2929</color>
+    <color name="viewBackground">@android:color/white</color>
+
+    <!--自定义loading view 颜色-->
+    <color name="circle" >#FF9800</color>
+    <color name="rect" >#FF5722</color>
+    <color name="triangle" >#FFC107</color>
+    <color name="font_hint" >#9B9999</color>
+    <color name="gray" >#dcdcdc</color>
+    <color name="icon_gray" >#A7A5A5</color>
+    <color name="ic_gray" >#96ffffff</color>
+    <color name="ic_drawable_dark">#FF424242</color>
+    <color name="textInputLayout">#96ffffff</color>
+    <color name="light_blue" >#00BCD4</color>
+    <color name="item_divider_color">#FFEDEDED</color>
+    <color name="item_title_text_color">#FF434343</color>
+    <color name="own_coin_text_color">#73C4FF</color>
+    <color name="coin_text_color">#108EE9</color>
+    <color name="colorTrans">#00000000</color>
+<!--    文本颜色-->
+    <color name="text_theme">#FFC800</color>
+    <color name="text_white" >#FFFFFF</color>
+    <color name="text_green" >#3fc75f</color>
+    <color name="text_red" >#f9382a</color>
+    <color name="text_gray">#616161</color>
+    <!--    按钮颜色-->
+    <color name="btn_theme">#FFC800</color>
+    <color name="btn_white" >#FFFFFF</color>
+    <color name="btn_green" >#3fc75f</color>
+    <color name="btn_red" >#f9382a</color>
+    <color name="btn_gray">#616161</color>
+
+    <!--    背景颜色-->
+    <color name="bg_theme">#FFC800</color>
+    <color name="bg_white" >#FFFFFF</color>
+    <color name="bg_green" >#3fc75f</color>
+    <color name="bg_red" >#f9382a</color>
+    <color name="bg_gray">#616161</color>
+
+</resources>
