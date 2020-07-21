@@ -1,10 +1,13 @@
 package com.chocozhao.wanandroid.mvp.model;
 
 import android.app.Application;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.OnLifecycleEvent;
 
 import com.chocozhao.wanandroid.mvp.contract.HomeContract;
 import com.chocozhao.wanandroid.mvp.model.api.service.UserService;
 import com.chocozhao.wanandroid.mvp.model.entity.BaseResponse;
+import com.chocozhao.wanandroid.mvp.model.entity.GetArticleData;
 import com.chocozhao.wanandroid.mvp.model.entity.GetBannerInfo;
 import com.google.gson.Gson;
 import com.jess.arms.di.scope.FragmentScope;
@@ -16,6 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import timber.log.Timber;
 
 
 /**
@@ -49,6 +53,23 @@ public class HomeModel extends BaseModel implements HomeContract.Model {
                 .obtainRetrofitService(UserService.class)
                 .getBanner();
     }
+
+    //获取文章列表
+    @Override
+    public Observable<BaseResponse<GetArticleData>> getArticle(int num, boolean update) {
+        return mRepositoryManager
+                .obtainRetrofitService(UserService.class)
+                .getArticle(num);
+
+    }
+
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    void onPause() {
+        Timber.d("Release Resource");
+    }
+
+
 
     @Override
     public void onDestroy() {

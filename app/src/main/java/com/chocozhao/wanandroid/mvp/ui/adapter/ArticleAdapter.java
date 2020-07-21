@@ -15,8 +15,8 @@ import java.util.List;
 public class ArticleAdapter extends BaseQuickAdapter<GetArticleData.DatasBean, BaseViewHolder> {
 
 
-    public ArticleAdapter(int layoutResId, @Nullable List<GetArticleData.DatasBean> data) {
-        super(layoutResId, data);
+    public ArticleAdapter(@Nullable List<GetArticleData.DatasBean> data) {
+        super(R.layout.recycle_item_article, data);
     }
 
     @Override

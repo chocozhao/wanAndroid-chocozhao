@@ -20,10 +20,12 @@ import com.chocozhao.wanandroid.di.component.DaggerHomeComponent;
 import com.chocozhao.wanandroid.mvp.contract.HomeContract;
 import com.chocozhao.wanandroid.mvp.model.entity.GetBannerInfo;
 import com.chocozhao.wanandroid.mvp.presenter.HomePresenter;
+import com.chocozhao.wanandroid.mvp.ui.adapter.ArticleAdapter;
 import com.chocozhao.wanandroid.mvp.ui.holder.BannerHolderView;
 import com.jess.arms.base.BaseFragment;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.LogUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.List;
@@ -31,8 +33,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
 
@@ -61,14 +61,9 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @Inject
     RxPermissions mRxPermissions;
     @Inject
-    List<GetBannerInfo> mBannerInfos;
-//    @Inject
-//    RecyclerView.LayoutManager mLayoutManager;
-//    @Inject
-//    RecyclerView.Adapter mAdapter;
-
-    Unbinder unbinder;
-
+    RecyclerView.LayoutManager mLayoutManager;
+    @Inject
+    ArticleAdapter mArticleAdapter;
     private boolean isLoadingMore;
 
     public static HomeFragment newInstance() {
@@ -93,8 +88,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        //设置轮播图数据
-        setUpBannerData();
+        LogUtils.debugInfo("V:initData");
         //初始化适配器
         initRecyclerView();
     }
@@ -172,7 +166,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
      */
     @Override
     public void onRefresh() {
-        mPresenter.requestBannerFromModel();
+        mPresenter.requestData(true,1);
     }
 
     /**
@@ -180,7 +174,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
      *
      * @param
      */
-    public void setUpBannerData() {
+    @Override
+    public void setUpBannerData(List<GetBannerInfo> getBannerInfo) {
         mConvenientBanner.setPages(new CBViewHolderCreator() {
             @Override
             public Holder createHolder(View itemView) {
@@ -191,16 +186,17 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
             public int getLayoutId() {
                 return R.layout.item_banner_view;
             }
-        }, mBannerInfos);
+        }, getBannerInfo);
     }
 
     /**
      * 初始化RecyclerView
      */
     private void initRecyclerView() {
-//        mRvArticleList.setAdapter(mAdapter);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-//        ArmsUtils.configRecyclerView(mRvArticleList, mLayoutManager);
+        ArmsUtils.configRecyclerView(mRvArticleList, mLayoutManager);
+        //初始化adatper数据
+        mRvArticleList.setAdapter(mArticleAdapter);
     }
 
     /**
@@ -241,17 +237,4 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     }
 
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        unbinder = ButterKnife.bind(this, rootView);
-        return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
 }

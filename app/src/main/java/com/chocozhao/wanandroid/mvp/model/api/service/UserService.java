@@ -16,6 +16,7 @@
 package com.chocozhao.wanandroid.mvp.model.api.service;
 
 import com.chocozhao.wanandroid.mvp.model.entity.BaseResponse;
+import com.chocozhao.wanandroid.mvp.model.entity.GetArticleData;
 import com.chocozhao.wanandroid.mvp.model.entity.GetBannerInfo;
 import com.chocozhao.wanandroid.mvp.model.entity.User;
 
@@ -25,6 +26,7 @@ import io.reactivex.Observable;
 import retrofit2.Retrofit;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -48,4 +50,7 @@ public interface UserService {
 
     @GET("banner/json")
     Observable<BaseResponse<List<GetBannerInfo>>> getBanner();
+
+    @GET("article/list/{num}/json")
+    Observable<BaseResponse<GetArticleData>> getArticle(@Path("num") int num);
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v4.app.Fragment;
 
 import com.chocozhao.wanandroid.mvp.model.entity.BaseResponse;
+import com.chocozhao.wanandroid.mvp.model.entity.GetArticleData;
 import com.chocozhao.wanandroid.mvp.model.entity.GetBannerInfo;
 import com.jess.arms.mvp.IModel;
 import com.jess.arms.mvp.IView;
@@ -31,17 +32,24 @@ public interface HomeContract {
     interface View extends IView {
 
         void startLoadMore();
+
         void endLoadMore();
+
         Activity getActivity();
 
         Fragment getFragment();
+
         //申请权限
         RxPermissions getRxPermissions();
-//        void setUpBanner(List<GetBannerInfo> getBannerInfoList);
+
+        void setUpBannerData(List<GetBannerInfo> getBannerInfoList);
     }
 
     //Model层定义接口,外部只需关心Model返回的数据,无需关心内部细节,即是否使用缓存
     interface Model extends IModel {
         Observable<BaseResponse<List<GetBannerInfo>>> getBanner();
+
+        Observable<BaseResponse<GetArticleData>> getArticle(int num, boolean update);
+
     }
 }

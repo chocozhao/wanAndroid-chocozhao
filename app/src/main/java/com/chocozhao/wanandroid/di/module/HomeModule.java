@@ -38,11 +38,6 @@ public abstract class HomeModule {
     @Binds
     abstract HomeContract.Model bindHomeModel(HomeModel model);
 
-    @FragmentScope
-    @Provides
-    static List<GetBannerInfo> provideGetBannerInfoList() {
-        return new ArrayList<>();
-    }
 
     @FragmentScope
     @Provides
@@ -58,13 +53,13 @@ public abstract class HomeModule {
 
     @FragmentScope
     @Provides
-    static List<GetArticleData> provideArticleList() {
+    static List<GetArticleData.DatasBean> provideArticleList() {
         return new ArrayList<>();
     }
 
     @FragmentScope
     @Provides
-    static RecyclerView.Adapter provideArticleAdapter(List<GetArticleData.DatasBean> list){
-        return new ArticleAdapter(R.layout.recycle_item_article,list);
+    static ArticleAdapter provideArticleAdapter(List<GetArticleData.DatasBean> list){
+        return new ArticleAdapter(list);
     }
 }
