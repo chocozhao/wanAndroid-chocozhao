@@ -20,7 +20,6 @@ import com.jess.arms.utils.LogUtils;
 import com.jess.arms.utils.PermissionUtil;
 import com.jess.arms.utils.RxLifecycleUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.logging.Logger;

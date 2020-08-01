@@ -20,7 +20,15 @@ import com.jess.arms.utils.RxLifecycleUtils;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.RxLifecycle;
 
+import org.reactivestreams.Publisher;
+
+import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
+import io.reactivex.MaybeTransformer;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -43,6 +51,62 @@ public class RxUtils {
     private RxUtils() {
     }
 
+    /**
+     * 统一线程处理
+     *Flowable 切换到主线程
+     * @param <T> 指定的泛型类型
+     * @return FlowableTransformer
+     */
+    public static <T> FlowableTransformer<T, T> flowableToMain() {
+        return new FlowableTransformer<T, T>() {
+            @Override
+            public Publisher<T> apply(@NonNull Flowable<T> upstream) {
+                return upstream.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    /**
+     * 统一线程处理
+     * Observable 切换到主线程
+     * @param <T> 指定的泛型类型
+     * @return ObservableTransformer
+     */
+    public static <T> ObservableTransformer<T, T> observableToMain() {
+        return new ObservableTransformer<T, T>() {
+            @Override
+            public ObservableSource<T> apply(Observable<T> upstream) {
+                return upstream.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+
+    /**
+     * 统一线程处理
+     * Maybe 切换到主线程
+     * @param <T> 指定的泛型类型
+     * @return MaybeTransformer
+     */
+    public static <T> MaybeTransformer<T, T> maybeToMain() {
+        return new MaybeTransformer<T, T>() {
+            @Override
+            public MaybeSource<T> apply(Maybe<T> upstream) {
+                return upstream.subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    /**
+     *  统一线程处理
+     *  切换线程、绑定生命周期以及view显示加载状态
+     * @param view
+     * @param <T>
+     * @return
+     */
     public static <T> ObservableTransformer<T, T> applySchedulers(final IView view) {
         return new ObservableTransformer<T, T>() {
             @Override
