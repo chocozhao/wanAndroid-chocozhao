@@ -65,6 +65,8 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     @Inject
     ArticleAdapter mArticleAdapter;
     private boolean isLoadingMore;
+    //轮播图翻页时间
+    private final static long TURN_PAGE = 3000;
 
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
@@ -88,7 +90,6 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        LogUtils.debugInfo("V:initData");
         //初始化适配器
         initRecyclerView();
     }
@@ -187,6 +188,7 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
                 return R.layout.item_banner_view;
             }
         }, getBannerInfo);
+        mConvenientBanner.startTurning(TURN_PAGE);
     }
 
     /**

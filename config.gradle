@@ -112,6 +112,7 @@ ext {
             //UI
             "convenientbanner"             : "com.bigkoo:ConvenientBanner:2.1.4",
             "BottomNavigationBar"          : "com.ashokvarma.android:bottom-navigation-bar:2.1.0",
-            "BaseRecyclerViewAdapterHelper": 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47'
+            "BaseRecyclerViewAdapterHelper": 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.47',
+            "verticalTabLayout"            : "q.rorbin:VerticalTabLayout:1.2.9",
     ]
 }

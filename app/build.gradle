@@ -94,6 +94,8 @@ dependencies {
     implementation rootProject.ext.dependencies["BottomNavigationBar"]
     //BaseRecyclerViewAdapterHelper
     implementation rootProject.ext.dependencies["BaseRecyclerViewAdapterHelper"]
+    //垂直纵向tab
+    implementation rootProject.ext.dependencies["verticalTabLayout"]
 
     //test
     testImplementation rootProject.ext.dependencies["junit"]
