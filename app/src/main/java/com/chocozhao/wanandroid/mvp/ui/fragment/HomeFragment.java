@@ -177,18 +177,18 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
      */
     @Override
     public void setUpBannerData(List<GetBannerInfo> getBannerInfo) {
-        mConvenientBanner.setPages(new CBViewHolderCreator() {
-            @Override
-            public Holder createHolder(View itemView) {
-                return new BannerHolderView(itemView, mContext);
-            }
-
-            @Override
-            public int getLayoutId() {
-                return R.layout.item_banner_view;
-            }
-        }, getBannerInfo);
-        mConvenientBanner.startTurning(TURN_PAGE);
+//        mConvenientBanner.setPages(new CBViewHolderCreator() {
+//            @Override
+//            public Holder createHolder(View itemView) {
+//                return new BannerHolderView(itemView, mContext);
+//            }
+//
+//            @Override
+//            public int getLayoutId() {
+//                return R.layout.item_banner_view;
+//            }
+//        }, getBannerInfo);
+//        mConvenientBanner.startTurning(TURN_PAGE);
     }
 
     /**

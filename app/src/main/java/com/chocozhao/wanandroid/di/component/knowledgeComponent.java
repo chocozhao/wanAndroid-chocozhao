@@ -3,9 +3,9 @@ package com.chocozhao.wanandroid.di.component;
 import dagger.BindsInstance;
 import dagger.Component;
 
+import com.chocozhao.wanandroid.di.module.KnowledgeModule;
 import com.jess.arms.di.component.AppComponent;
 
-import com.chocozhao.wanandroid.di.module.knowledgeModule;
 import com.chocozhao.wanandroid.mvp.contract.KnowledgeContract;
 
 import com.jess.arms.di.scope.FragmentScope;
@@ -25,7 +25,7 @@ import com.chocozhao.wanandroid.mvp.ui.fragment.KnowledgeFragment;
  * ================================================
  */
 @FragmentScope
-@Component(modules = knowledgeModule.class, dependencies = AppComponent.class)
+@Component(modules = KnowledgeModule.class, dependencies = AppComponent.class)
 public interface knowledgeComponent {
     void inject(KnowledgeFragment fragment);
 

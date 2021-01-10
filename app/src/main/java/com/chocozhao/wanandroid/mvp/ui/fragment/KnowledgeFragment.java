@@ -6,19 +6,39 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chocozhao.wanandroid.R;
+import com.chocozhao.wanandroid.di.component.DaggerknowledgeComponent;
+import com.chocozhao.wanandroid.mvp.contract.KnowledgeContract;
+import com.chocozhao.wanandroid.mvp.model.entity.GetTestData;
+import com.chocozhao.wanandroid.mvp.presenter.KnowledgePresenter;
+import com.chocozhao.wanandroid.mvp.ui.adapter.TestAdapter;
 import com.jess.arms.base.BaseFragment;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
+import com.jess.arms.utils.LogUtils;
 
-import com.chocozhao.wanandroid.di.component.DaggerknowledgeComponent;
-import com.chocozhao.wanandroid.mvp.contract.KnowledgeContract;
-import com.chocozhao.wanandroid.mvp.presenter.KnowledgePresenter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.chocozhao.wanandroid.R;
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import timber.log.Timber;
 
 import static com.jess.arms.utils.Preconditions.checkNotNull;
 
@@ -37,6 +57,20 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  */
 public class KnowledgeFragment extends BaseFragment<KnowledgePresenter> implements KnowledgeContract.View {
 
+    @BindView(R.id.rv_test)
+    RecyclerView mRvTest;
+    //    @Inject
+//    GridLayoutManager mLayoutManager;
+    @Inject
+    TestAdapter mTestAdapter;
+    @Inject
+    List<GetTestData> mTestDataList;
+    @BindView(R.id.tv_template)
+    TextView mTvTemplate;
+    @Inject
+    Map<Integer, Boolean> map;
+
+
     public static KnowledgeFragment newInstance() {
         KnowledgeFragment fragment = new KnowledgeFragment();
         return fragment;
@@ -54,13 +88,34 @@ public class KnowledgeFragment extends BaseFragment<KnowledgePresenter> implemen
 
     @Override
     public View initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_knowledge, container, false);
     }
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-
+        //初始化适配器
+        initRecyclerView();
+        CheckBox checkBox = getView().findViewById(R.id.cb_select);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    for (int i = 0; i < mTestAdapter.getData().size(); i++) {
+                        //选中
+                        map.put(i, true);
+                    }
+                } else {
+                    for (int i = 0; i < mTestAdapter.getData().size(); i++) {
+                        //取消选中
+                        map.put(i, false);
+                    }
+                }
+                mTestAdapter.setMap(map);
+            }
+        });
     }
+
 
     /**
      * 通过此方法可以使 Fragment 能够与外界做一些交互和通信, 比如说外部的 Activity 想让自己持有的某个 Fragment 对象执行一些方法,
@@ -103,6 +158,41 @@ public class KnowledgeFragment extends BaseFragment<KnowledgePresenter> implemen
 
     }
 
+    //初始化适配器
+    private void initRecyclerView() {
+        ArmsUtils.configRecyclerView(mRvTest, new GridLayoutManager(mContext, 4));
+
+        for (int i = 0; i < 10; i++) {
+            GetTestData data = new GetTestData();
+            data.setAmt("￥" + i + ".00/瓶/瓶");
+            data.setNumber(i + "ss");
+            data.setTitle(i + "--燕塘草莓味酸奶 250ml");
+            mTestDataList.add(data);
+        }
+        //初始化adatper数据
+        mRvTest.setAdapter(mTestAdapter);
+        mTestAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                ImageView imageView = view.findViewById(R.id.iv_select);
+//                for (Integer key : mTestAdapter.getMap().keySet()) {
+//                    LogUtils.debugInfo("booleanValue:"+mTestAdapter.getMap().get(key).booleanValue());
+//                    imageView.setVisibility(mTestAdapter.getMap().get(key).booleanValue()?View.GONE:View.VISIBLE);
+//                }
+                if (imageView.getVisibility() == View.GONE) {
+                    //选中
+                    imageView.setVisibility(View.VISIBLE);
+                    mTestAdapter.getMap().put(position, true);
+                } else {
+                    //取消选中
+                    imageView.setVisibility(View.GONE);
+                    mTestAdapter.getMap().put(position, false);
+                }
+            }
+        });
+    }
+
+
     @Override
     public void showLoading() {
 
@@ -128,5 +218,16 @@ public class KnowledgeFragment extends BaseFragment<KnowledgePresenter> implemen
     @Override
     public void killMyself() {
 
+    }
+
+
+    @OnClick({R.id.tv_template})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_template:
+
+                break;
+
+        }
     }
 }

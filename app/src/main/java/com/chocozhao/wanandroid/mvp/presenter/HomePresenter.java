@@ -9,6 +9,7 @@ import com.chocozhao.wanandroid.mvp.contract.HomeContract;
 import com.chocozhao.wanandroid.mvp.model.entity.BaseResponse;
 import com.chocozhao.wanandroid.mvp.model.entity.GetArticleData;
 import com.chocozhao.wanandroid.mvp.model.entity.GetBannerInfo;
+import com.chocozhao.wanandroid.mvp.model.entity.GetZipData;
 import com.chocozhao.wanandroid.mvp.model.entity.User;
 import com.chocozhao.wanandroid.mvp.ui.adapter.ArticleAdapter;
 import com.jess.arms.di.scope.FragmentScope;
@@ -26,11 +27,16 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
 import me.jessyan.rxerrorhandler.handler.RetryWithDelay;
+import timber.log.Timber;
 
 
 /**
@@ -73,18 +79,19 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     void onCreate() {
         //打开 App 时自动加载列表
-        requestData(true,num);
+        requestData(true, num);
     }
 
-    public void requestData(final boolean pullToRefresh,int num) {
+    public void requestData(final boolean pullToRefresh, int num) {
         //请求外部存储权限用于适配android6.0的权限管理机制
         PermissionUtil.externalStorage(new PermissionUtil.RequestPermission() {
             @Override
             public void onRequestPermissionSuccess() {
                 //request permission success, do something.
-                requestBannerFromModel();
-                //列表数据
-                requestArticle(pullToRefresh, num);
+//                requestBannerFromModel();
+//                //列表数据
+//                requestArticle(pullToRefresh, num);
+                requestZipFromModel();
             }
 
             @Override
@@ -101,6 +108,54 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
         }, mRootView.getRxPermissions(), mErrorHandler);
     }
 
+    private void requestZipFromModel() {
+//        Observable.zip(mModel.getBanner(), mModel.getArticle(1, true), new BiFunction<BaseResponse<List<GetBannerInfo>>, BaseResponse<GetArticleData>, BaseResponse<GetZipData>>() {
+//            @Override
+//            public BaseResponse<GetZipData>apply(BaseResponse<List<GetBannerInfo>> listBaseResponse, BaseResponse<GetArticleData> getArticleDataBaseResponse) throws Exception {
+//                BaseResponse<GetZipData> getZipDataBaseResponse = new BaseResponse<>();
+//                GetZipData getZipData = new GetZipData(listBaseResponse,getArticleDataBaseResponse);
+//                getZipDataBaseResponse.setData(getZipData);
+//                return getZipDataBaseResponse;
+//            }
+//        }).compose(RxUtils.observableToMain())
+//                .subscribe(new ErrorHandleSubscriber<BaseResponse<GetZipData>>(mErrorHandler) {
+//                    @Override
+//                    public void onNext(BaseResponse<GetZipData> baseResponse) {
+//                        if (baseResponse.isSuccess()) {
+//                            mRootView.setUpBannerData(baseResponse.getData().getGetBannerInfo().getData());
+//                        } else {
+//                            mRootView.showMessage(baseResponse.getErrorMsg());
+//                        }
+////                        LogUtils.debugInfo("getGetBannerInfo getTitle:" + baseResponse.getData().getGetBannerInfo().getData().get(0).getTitle()
+////                                + "  getGetArticleData Author:" + baseResponse.getData().getGetArticleData().getData().getDatas().get(0).getAuthor());
+//                    }
+//                });
+
+        mModel.getBanner()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(new Function<BaseResponse<List<GetBannerInfo>>, ObservableSource<BaseResponse<GetArticleData>>>() {
+                    @Override
+                    public ObservableSource<BaseResponse<GetArticleData>> apply(BaseResponse<List<GetBannerInfo>> listBaseResponse) throws Exception {
+                        Timber.d("getBanner:" + listBaseResponse.getData().get(0).getTitle());
+                        if (listBaseResponse.isSuccess()) {
+                            mRootView.setUpBannerData(listBaseResponse.getData());
+                        } else {
+                            mRootView.showMessage(listBaseResponse.getErrorMsg());
+                        }
+                        return mModel.getArticle(1, true);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ErrorHandleSubscriber<BaseResponse<GetArticleData>>(mErrorHandler) {
+                    @Override
+                    public void onNext(BaseResponse<GetArticleData> getArticleDataBaseResponse) {
+                        Timber.d("getArticle:" + getArticleDataBaseResponse.getData().getDatas().get(0).getAuthor());
+                    }
+                });
+
+    }
+
     /**
      * 轮播图
      */
@@ -108,7 +163,6 @@ public class HomePresenter extends BasePresenter<HomeContract.Model, HomeContrac
         mModel.getBanner()
                 .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
                 .compose(RxUtils.applySchedulers(mRootView))
-                .compose(RxLifecycleUtils.bindToLifecycle(mRootView))
                 .subscribe(new ErrorHandleSubscriber<BaseResponse<List<GetBannerInfo>>>(mErrorHandler) {
                     @Override
                     public void onNext(BaseResponse<List<GetBannerInfo>> listBaseResponse) {

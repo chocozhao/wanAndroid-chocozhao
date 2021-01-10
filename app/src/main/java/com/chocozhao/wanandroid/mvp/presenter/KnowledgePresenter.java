@@ -41,6 +41,8 @@ public class KnowledgePresenter extends BasePresenter<KnowledgeContract.Model, K
         super(model, rootView);
     }
 
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
